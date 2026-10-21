@@ -1,0 +1,75 @@
+# Global settings for the GEO engine. Per-client settings live in clients/<slug>/ops/client.toml.
+
+[runner]
+claude_bin = ""              # blank = find `claude` on PATH
+model = "opus"               # model for task sessions
+parallel_clients = 3         # clients worked on at the same time
+tasks_per_run = 1            # per client per run (3 runs/day -> up to 3 tasks/day/client; your review time is the limit)
+task_timeout_min = 45
+max_fix_rounds = 2           # times Claude may fix validator errors before the task fails
+max_budget_usd = 0           # >0 adds --max-budget-usd (only matters with API-key billing)
+cooldown_days = 14           # don't re-edit a page sooner than this
+extra_allowed_tools = []     # e.g. ["Bash(pnpm *)"]
+
+[runner.model_by_skill]      # cheaper model for routine work; everything else uses `model`
+retitle = "sonnet"
+page-fixes = "sonnet"
+index-fix = "sonnet"
+cannibalization-review = "sonnet"
+ingest-client-docs = "sonnet"
+
+[validator]
+max_links_per_1000_words = 13
+
+[mentions]
+engines = ["chatgpt", "perplexity", "gemini", "claude"]   # used only if the API key is in .env
+samples = 3                  # times each prompt is asked per engine per run
+weekly_full_day = "Mon"      # full prompt set + crawl + rank check on this day; daily prompts otherwise
+openai_model = "gpt-5"
+perplexity_model = "sonar"
+gemini_model = "gemini-2.5-flash"
+anthropic_model = "claude-sonnet-5-5"
+
+[gsc]
+inspect_per_day = 60         # URL Inspection calls per client per day (quota ~2,000/property/day)
+
+[planner]
+min_impressions = 100        # per 28 days, for a query to count
+
+[planner.lift]               # expected relative gain per skill; learn_lift.py replaces these with real data
+refresh-page = 0.4
+retitle = 0.3
+write-article = 0.5
+comparison-page = 0.6
+build-free-tool = 0.8
+page-fixes = 0.2
+index-fix = 0.5
+correction-research = 0.5
+cannibalization-review = 0.3
+ingest-client-docs = 1.0
+
+[planner.effort]             # rough minutes of Claude + your review
+refresh-page = 30
+retitle = 10
+write-article = 60
+comparison-page = 60
+build-free-tool = 120
+page-fixes = 20
+index-fix = 15
+correction-research = 25
+cannibalization-review = 15
+ingest-client-docs = 10
+
+[planner.boost]
+correction-research = 2.0    # wrong facts in AI answers hurt trust: do these first
+
+[comms]
+hold_for_review = true       # client-bound questions wait for your Send button in Telegram
+max_questions_per_task = 3
+poll_seconds = 120           # how often Teams threads and email conversations are checked for replies
+
+[report]
+model = "sonnet"
+
+[backup]
+dir = "C:/Users/idris/LSI Media LLC/LSI Media LLC General Activities - Documents/GEO backups"

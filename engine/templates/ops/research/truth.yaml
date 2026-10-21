@@ -1,0 +1,31 @@
+# Facts about {{NAME}}. Code checks every page against this file. Keep it current.
+company:
+  name: "{{NAME}}"
+  domain: "{{DOMAIN}}"
+  one_liner: ""            # "<Name> is a <category> for <who>." Written the way you want AI to say it.
+  founded: null
+  headquarters: ""
+
+pricing:
+  currency: USD
+  plans: []                # - {name: Team, price_month: 19, price_year: 190, per: seat}
+  free_trial_days: null
+allowed_prices: []         # any other dollar amounts that may appear next to the brand name
+
+features: []
+not_features: []           # things people assume you do but you don't
+integrations: []
+customers_we_may_name: []  # only with written permission
+certifications: []         # e.g. SOC 2 Type II
+
+claims_forbidden:          # phrases that must never appear
+  - "#1"
+  - "best in the world"
+  - "guaranteed"
+
+checks: []                 # numeric facts code enforces everywhere, e.g.
+#  - {pattern: "(\\d+)\\+?\\s+integrations", expect: 120, note: "integration count"}
+
+competitors: {}            # name: {positioning: "...", pricing_source: "https://..."}
+
+last_verified: null

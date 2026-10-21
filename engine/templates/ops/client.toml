@@ -1,0 +1,42 @@
+name = "{{NAME}}"
+domain = "{{DOMAIN}}"
+brand_aliases = []                # other names AI might use, e.g. ["Acme Help Desk", "AcmeHQ"]
+competitors = {{COMPETITORS}}
+active = true
+
+[site]
+kind = "{{KIND}}"                 # git | wordpress
+default_branch = "{{DEFAULT_BRANCH}}"
+content_dir = ""                  # git sites: where articles live, e.g. "content/blog"
+build_cmd = ""                    # git sites: e.g. "npm ci && npm run build" (blank = skip)
+test_cmd = ""                     # e.g. "npm test"
+required_frontmatter = []         # e.g. ["title", "description"]; WordPress output uses title + meta_description
+wp_url = "{{WP_URL}}"
+sitemap = ""                      # blank = https://<domain>/sitemap.xml
+
+[gsc]
+property = "{{GSC}}"              # "sc-domain:example.com" or "https://www.example.com/"
+
+[indexnow]
+key = ""                          # put <key>.txt (containing the key) at the site root first
+
+[comms]
+channels = {{CHANNELS}}           # first one is used: "telegram" | "teams" | "email"
+emails = {{CONTACTS}}
+teams_team_id = ""
+teams_channel_id = ""
+announce_shipped = true           # tell the client when a change ships
+
+[google]
+enabled = {{GOOGLE}}
+share_with = {{CONTACTS}}
+
+[approvals]
+client_must_approve = ["comparison-page"]   # skills whose output the client signs off on (via a Google Doc)
+
+[limits]                          # monthly caps per skill (matches what you sell)
+write-article = 12
+comparison-page = 4
+build-free-tool = 1
+refresh-page = 20
+retitle = 20

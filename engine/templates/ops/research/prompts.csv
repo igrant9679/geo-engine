@@ -1,0 +1,5 @@
+prompt,kind,frequency,expect,target_url
+"best <category> for <audience>",category,daily,,
+"top <competitor> alternatives",comparison,weekly,,
+"how do I <problem the product solves>",problem,weekly,,
+"how much does {{NAME}} cost",fact,weekly,"\$\d+",

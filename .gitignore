@@ -1,0 +1,11 @@
+# Client work, runtime data and secrets never go in the engine repo
+clients/
+data/
+logs/
+.venv/
+engine/.env
+engine/google_client_secret.json
+*token*.json
+*.db
+__pycache__/
+*.pyc
