@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GEO Engine Guide</title>
+<meta name="description" content="Build and run guide for the one-person AI-visibility and SEO service engine.">
+<style>
+:root{--bg:#fbfaf7;--panel:#ffffff;--text:#1d1f23;--muted:#5d6470;--line:#e4e1d9;--accent:#1f5fbf;--accent-soft:#e8effb;
+--code-bg:#f3f1ec;--code-text:#1d1f23;--pre-bg:#16181d;--pre-text:#e8e6e1;--callout:#fff7e0;--callout-line:#e0b84a;--th:#f1efe9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121418;--panel:#191c21;--text:#e6e4df;--muted:#a1a7b0;
+--line:#2b3038;--accent:#7fb0ff;--accent-soft:#1c2a40;--code-bg:#232830;--code-text:#e6e4df;--pre-bg:#0c0e11;--pre-text:#e6e4df;
+--callout:#2a2414;--callout-line:#a8862e;--th:#1f2329}}
+:root[data-theme="dark"]{--bg:#121418;--panel:#191c21;--text:#e6e4df;--muted:#a1a7b0;--line:#2b3038;--accent:#7fb0ff;
+--accent-soft:#1c2a40;--code-bg:#232830;--code-text:#e6e4df;--pre-bg:#0c0e11;--pre-text:#e6e4df;--callout:#2a2414;--callout-line:#a8862e;--th:#1f2329}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
+"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-underline-offset:2px}
+.layout{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1240px;margin:0 auto}
+nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 18px 40px 24px;border-right:1px solid var(--line);font-size:14px}
+nav.toc .brand{font-weight:700;font-size:15px;margin:0 0 4px}
+nav.toc .sub{color:var(--muted);font-size:12.5px;margin:0 0 18px}
+nav.toc ol{list-style:none;margin:0;padding:0}
+nav.toc li a{display:block;padding:4px 8px;border-radius:6px;color:var(--text);text-decoration:none;line-height:1.35}
+nav.toc li a:hover{background:var(--accent-soft)}
+nav.toc li.h3 a{padding-left:22px;color:var(--muted);font-size:13px}
+nav.toc li a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tools{display:flex;gap:8px;margin:0 0 16px}
+.tools button{font:inherit;font-size:12.5px;padding:5px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--text);cursor:pointer}
+main{padding:40px 48px 80px;max-width:900px;min-width:0}
+header.top h1{font-size:34px;line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
+header.top .meta{color:var(--muted);font-size:14px;margin:0 0 28px}
+h2{font-size:25px;line-height:1.3;margin:56px 0 14px;padding-top:12px;border-top:1px solid var(--line)}
+h3{font-size:19px;margin:34px 0 10px}
+h2 .anchor,h3 .anchor{opacity:0;margin-left:8px;font-weight:400;text-decoration:none}
+h2:hover .anchor,h3:hover .anchor{opacity:.6}
+p,li{max-width:76ch}
+li{margin:4px 0}
+li>p{margin:6px 0}
+hr{display:none}
+code{font-family:ui-monospace,"Cascadia Code",Consolas,"SF Mono",Menlo,monospace;font-size:.88em;background:var(--code-bg);color:var(--code-text);
+padding:.12em .38em;border-radius:5px;overflow-wrap:anywhere}
+.codebox{position:relative;margin:12px 0 18px}
+pre{margin:0;background:var(--pre-bg);color:var(--pre-text);padding:16px 18px;border-radius:10px;overflow-x:auto;font-size:13.5px;line-height:1.5}
+pre code{background:none;color:inherit;padding:0;font-size:inherit;overflow-wrap:normal}
+.copy{position:absolute;top:8px;right:8px;font:12px/1 inherit;font-family:inherit;padding:6px 9px;border-radius:6px;border:1px solid #3a3f48;
+background:#22262d;color:#e6e4df;cursor:pointer;opacity:0;transition:opacity .15s}
+.codebox:hover .copy,.copy:focus-visible{opacity:.9}
+.copy:hover{opacity:1}
+@media (hover:none){.copy{opacity:.85}}
+.table-wrap{overflow-x:auto;margin:14px 0 20px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{background:var(--th);font-weight:600}
+tr:last-child td{border-bottom:none}
+blockquote{margin:16px 0;padding:12px 16px;background:var(--callout);border-left:4px solid var(--callout-line);border-radius:0 8px 8px 0}
+blockquote p{margin:4px 0}
+footer{margin-top:64px;color:var(--muted);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
+details.mobile-toc{display:none}
+@media (max-width:900px){
+ .layout{display:block}
+ nav.toc{display:none}
+ details.mobile-toc{display:block;margin:0 0 24px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:10px 14px}
+ details.mobile-toc summary{cursor:pointer;font-weight:600}
+ details.mobile-toc ol{list-style:none;padding:8px 0 0;margin:0}
+ details.mobile-toc li.h3{padding-left:14px;font-size:14px}
+ main{padding:24px 16px 60px}
+ header.top h1{font-size:27px}
+ h2{font-size:22px}
+}
+@media print{
+ nav.toc,details.mobile-toc,.copy,.tools{display:none!important}
+ .layout{display:block}
+ main{max-width:none;padding:0}
+ body{background:#fff;color:#000;font-size:11pt}
+ pre{background:#f4f4f4;color:#000;white-space:pre-wrap;border:1px solid #ddd}
+ a{color:#000}
+ h2{break-after:avoid}
+ .codebox,.table-wrap,tr{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+  <p class="brand">GEO Engine Guide</p>
+  <p class="sub">Build and run instructions</p>
+  <div class="tools"><button id="theme" type="button">Light / dark</button><button id="print" type="button">Print / PDF</button></div>
+  <ol><li class="h2"><a href="#1-how-it-works">1. How it works</a></li>
+<li class="h2"><a href="#part-a-one-time-setup-on-your-pc">Part A: One-time setup on your PC</a></li>
+<li class="h3"><a href="#a1-put-the-kit-in-place">A1. Put the kit in place</a></li>
+<li class="h3"><a href="#a2-claude-code-the-worker">A2. Claude Code (the worker)</a></li>
+<li class="h3"><a href="#a3-github-for-clients-with-code-based-sites">A3. GitHub (for clients with code-based sites)</a></li>
+<li class="h3"><a href="#a4-google-search-console-docs">A4. Google (Search Console + Docs)</a></li>
+<li class="h3"><a href="#a5-microsoft-365-teams-email">A5. Microsoft 365 (Teams + email)</a></li>
+<li class="h3"><a href="#a6-telegram-your-control-panel-and-client-groups">A6. Telegram (your control panel, and client groups)</a></li>
+<li class="h3"><a href="#a7-ai-engines-for-mention-tracking">A7. AI engines for mention tracking</a></li>
+<li class="h3"><a href="#a8-optional-dataforseo">A8. Optional: DataForSEO</a></li>
+<li class="h3"><a href="#a9-review-engine-settings-toml">A9. Review engine\settings.toml</a></li>
+<li class="h3"><a href="#a10-start-the-services">A10. Start the services</a></li>
+<li class="h2"><a href="#part-b-prove-it-on-your-own-site-first-client-zero">Part B: Prove it on your own site first (client zero)</a></li>
+<li class="h2"><a href="#part-c-onboard-a-paying-client-day-0-to-day-7">Part C: Onboard a paying client (day 0 to day 7)</a></li>
+<li class="h3"><a href="#c1-before-kickoff-contract-signed">C1. Before kickoff (contract signed)</a></li>
+<li class="h3"><a href="#c2-create-the-client">C2. Create the client</a></li>
+<li class="h3"><a href="#c3-questionnaire-google-doc">C3. Questionnaire (Google Doc)</a></li>
+<li class="h3"><a href="#c4-research-foundation">C4. Research foundation</a></li>
+<li class="h3"><a href="#c5-facts-sheet-google-doc">C5. Facts sheet (Google Doc)</a></li>
+<li class="h3"><a href="#c6-link-the-channel">C6. Link the channel</a></li>
+<li class="h3"><a href="#c7-baseline-and-first-run">C7. Baseline and first run</a></li>
+<li class="h3"><a href="#c8-hand-over-to-the-schedule">C8. Hand over to the schedule</a></li>
+<li class="h2"><a href="#part-d-running-it">Part D: Running it</a></li>
+<li class="h3"><a href="#every-day-about-15-minutes-per-10-clients-twice-a-day">Every day (about 15 minutes per 10 clients, twice a day)</a></li>
+<li class="h3"><a href="#every-monday">Every Monday</a></li>
+<li class="h3"><a href="#every-month">Every month</a></li>
+<li class="h3"><a href="#offboarding-a-client">Offboarding a client</a></li>
+<li class="h2"><a href="#part-e-reference">Part E: Reference</a></li>
+<li class="h3"><a href="#files-and-folders">Files and folders</a></li>
+<li class="h3"><a href="#what-gets-collected-daily-unless-noted">What gets collected (daily unless noted)</a></li>
+<li class="h3"><a href="#how-the-planner-decides-score-opportunity-lift-confidence-bo">How the planner decides (score = opportunity × lift × confidence × boost ÷ effort)</a></li>
+<li class="h3"><a href="#validator-checks-validate-py">Validator checks (validate.py)</a></li>
+<li class="h3"><a href="#skills-engine-skills">Skills (engine/skills)</a></li>
+<li class="h3"><a href="#channel-behavior">Channel behavior</a></li>
+<li class="h2"><a href="#part-f-customizing">Part F: Customizing</a></li>
+<li class="h2"><a href="#part-g-troubleshooting">Part G: Troubleshooting</a></li>
+<li class="h2"><a href="#part-h-security-compliance-offboarding">Part H: Security, compliance, offboarding</a></li>
+<li class="h2"><a href="#part-i-costs-and-capacity">Part I: Costs and capacity</a></li>
+<li class="h2"><a href="#command-cheat-sheet">Command cheat sheet</a></li>
+<li class="h2"><a href="#what-was-tested-oct-21-2026-on-winai5">What was tested (Oct 21, 2026, on WINAI5)</a></li></ol>
+</nav>
+<main>
+<header class="top"><h1>GEO Engine: Build and Run Guide</h1>
+<p class="meta">Updated October 21, 2026 · source: GUIDE.md in <a href="https://github.com/igrant9679/geo-engine" target="_blank" rel="noopener">igrant9679/geo-engine</a></p></header>
+<details class="mobile-toc"><summary>Contents</summary><ol><li class="h2"><a href="#1-how-it-works">1. How it works</a></li>
+<li class="h2"><a href="#part-a-one-time-setup-on-your-pc">Part A: One-time setup on your PC</a></li>
+<li class="h3"><a href="#a1-put-the-kit-in-place">A1. Put the kit in place</a></li>
+<li class="h3"><a href="#a2-claude-code-the-worker">A2. Claude Code (the worker)</a></li>
+<li class="h3"><a href="#a3-github-for-clients-with-code-based-sites">A3. GitHub (for clients with code-based sites)</a></li>
+<li class="h3"><a href="#a4-google-search-console-docs">A4. Google (Search Console + Docs)</a></li>
+<li class="h3"><a href="#a5-microsoft-365-teams-email">A5. Microsoft 365 (Teams + email)</a></li>
+<li class="h3"><a href="#a6-telegram-your-control-panel-and-client-groups">A6. Telegram (your control panel, and client groups)</a></li>
+<li class="h3"><a href="#a7-ai-engines-for-mention-tracking">A7. AI engines for mention tracking</a></li>
+<li class="h3"><a href="#a8-optional-dataforseo">A8. Optional: DataForSEO</a></li>
+<li class="h3"><a href="#a9-review-engine-settings-toml">A9. Review engine\settings.toml</a></li>
+<li class="h3"><a href="#a10-start-the-services">A10. Start the services</a></li>
+<li class="h2"><a href="#part-b-prove-it-on-your-own-site-first-client-zero">Part B: Prove it on your own site first (client zero)</a></li>
+<li class="h2"><a href="#part-c-onboard-a-paying-client-day-0-to-day-7">Part C: Onboard a paying client (day 0 to day 7)</a></li>
+<li class="h3"><a href="#c1-before-kickoff-contract-signed">C1. Before kickoff (contract signed)</a></li>
+<li class="h3"><a href="#c2-create-the-client">C2. Create the client</a></li>
+<li class="h3"><a href="#c3-questionnaire-google-doc">C3. Questionnaire (Google Doc)</a></li>
+<li class="h3"><a href="#c4-research-foundation">C4. Research foundation</a></li>
+<li class="h3"><a href="#c5-facts-sheet-google-doc">C5. Facts sheet (Google Doc)</a></li>
+<li class="h3"><a href="#c6-link-the-channel">C6. Link the channel</a></li>
+<li class="h3"><a href="#c7-baseline-and-first-run">C7. Baseline and first run</a></li>
+<li class="h3"><a href="#c8-hand-over-to-the-schedule">C8. Hand over to the schedule</a></li>
+<li class="h2"><a href="#part-d-running-it">Part D: Running it</a></li>
+<li class="h3"><a href="#every-day-about-15-minutes-per-10-clients-twice-a-day">Every day (about 15 minutes per 10 clients, twice a day)</a></li>
+<li class="h3"><a href="#every-monday">Every Monday</a></li>
+<li class="h3"><a href="#every-month">Every month</a></li>
+<li class="h3"><a href="#offboarding-a-client">Offboarding a client</a></li>
+<li class="h2"><a href="#part-e-reference">Part E: Reference</a></li>
+<li class="h3"><a href="#files-and-folders">Files and folders</a></li>
+<li class="h3"><a href="#what-gets-collected-daily-unless-noted">What gets collected (daily unless noted)</a></li>
+<li class="h3"><a href="#how-the-planner-decides-score-opportunity-lift-confidence-bo">How the planner decides (score = opportunity × lift × confidence × boost ÷ effort)</a></li>
+<li class="h3"><a href="#validator-checks-validate-py">Validator checks (validate.py)</a></li>
+<li class="h3"><a href="#skills-engine-skills">Skills (engine/skills)</a></li>
+<li class="h3"><a href="#channel-behavior">Channel behavior</a></li>
+<li class="h2"><a href="#part-f-customizing">Part F: Customizing</a></li>
+<li class="h2"><a href="#part-g-troubleshooting">Part G: Troubleshooting</a></li>
+<li class="h2"><a href="#part-h-security-compliance-offboarding">Part H: Security, compliance, offboarding</a></li>
+<li class="h2"><a href="#part-i-costs-and-capacity">Part I: Costs and capacity</a></li>
+<li class="h2"><a href="#command-cheat-sheet">Command cheat sheet</a></li>
+<li class="h2"><a href="#what-was-tested-oct-21-2026-on-winai5">What was tested (Oct 21, 2026, on WINAI5)</a></li></ol></details>
+<p><strong>What this is:</strong> a working, one-person &quot;AI visibility + SEO&quot; service engine, modeled on Josh Pigford's FirstIndex.
+This version uses the free or already-owned stack you chose:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Tool</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Client conversations</td>
+<td><strong>Telegram</strong>, <strong>Microsoft Teams</strong>, <strong>email</strong> (Outlook via Microsoft 365)</td>
+<td>Free / already paid (M365)</td>
+</tr>
+<tr>
+<td>Client-facing documents (questionnaire, facts sheet, approvals, weekly reports)</td>
+<td><strong>Google Docs</strong></td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Your control panel (approve / reject / request changes from your phone)</td>
+<td><strong>Telegram bot</strong></td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Internal database</td>
+<td><strong>SQLite</strong> (one file)</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Research, facts, work logs</td>
+<td><strong>Plain files in a Git repo per client</strong></td>
+<td>Free (private GitHub repos are free)</td>
+</tr>
+<tr>
+<td>The worker</td>
+<td><strong>Claude Code</strong> (headless) on your PC</td>
+<td>Your Claude plan</td>
+</tr>
+<tr>
+<td>Search data</td>
+<td><strong>Google Search Console API</strong>, IndexNow</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>AI-answer tracking</td>
+<td>ChatGPT / Perplexity / Gemini / Claude APIs</td>
+<td>Pay-per-use (pennies per answer; Gemini has a free tier)</td>
+</tr>
+<tr>
+<td>Rank tracking (optional)</td>
+<td>DataForSEO</td>
+<td>Pay-per-use</td>
+</tr>
+</tbody>
+</table></div>
+<p>The code is in the <code>engine/</code> folder next to this guide. It is complete and tested (see &quot;What was tested&quot; at the
+end). The steps below take you from nothing to a running service, then cover how you operate it every day.</p>
+<hr />
+<h2 id="1-how-it-works">1. How it works<a class="anchor" href="#1-how-it-works" aria-label="Link to this section">#</a></h2>
+<pre><code> 3x daily (Task Scheduler)                                   Always on (Task Scheduler at logon)
+ ┌──────────────── daily.py ───────────────────┐             ┌──────────── listener.py ─────────────┐
+ │ for each client (3 at a time):              │             │ Telegram bot: your buttons + client  │
+ │  1 collect.py   GSC, crawl, index status,   │             │   group replies                      │
+ │                 AI answers, Google Docs     │   SQLite    │ Every 2 min: Teams thread replies    │
+ │  2 planner.py   score candidate tasks       │◄──geo.db───►│   and email replies (Graph API)      │
+ │  3 runner.py    claude -p  (fresh session)  │             │ Approve → merge PR / publish WP draft│
+ │                 → validate.py (code checks) │             │   → IndexNow → &quot;Shipped&quot; to client   │
+ │                 → PR (git) or WP draft      │             └──────────────────────────────────────┘
+ │                 → Telegram: &quot;Review #12&quot; ───┼──► you tap ✅ / ❌ / ✏️
+ │  4 backup       geo.db → OneDrive folder    │
+ └─────────────────────────────────────────────┘
+ Mondays: weekly_report.py → Google Doc → you tap &quot;Send to client&quot;
+ Sundays: learn_lift.py   → which kinds of work actually moved clicks → planner weights
+</code></pre>
+<p><strong>Rules the design follows (from the video):</strong></p>
+<ul>
+<li><strong>One client = one isolated folder</strong> (<code>clients/&lt;slug&gt;/ops</code> = your private Git repo; <code>clients/&lt;slug&gt;/site</code> = the
+client's website repo if it's code-based). Claude runs inside one client's folder at a time, in a <strong>fresh
+session per task</strong>, so nothing bleeds between clients.</li>
+<li><strong>Code decides what to do and checks the work; Claude does the work.</strong> The planner, validator, delivery and
+messaging are plain Python. They behave the same way every run.</li>
+<li><strong>A person approves everything</strong> that ships or goes to a client: changes, questions, reports.</li>
+<li><strong>Skills are the standard operating procedures.</strong> One <code>SKILL.md</code> per kind of work, copied into each client folder.</li>
+</ul>
+<p><strong>Task lifecycle:</strong></p>
+<pre><code>planned → running → review ──✅──► merged (shipped)
+             │         ├──❌──► rejected
+             │         └──✏️──► blocked (your notes) → planned → running (same Claude session, revises)
+             ├─ needs a fact → blocked (question drafted → you tap 📤 Send → client replies) → planned → running
+             └─ error / validator still failing after 2 fix rounds → failed (you get a ❌ message)
+</code></pre>
+<hr />
+<h2 id="part-a-one-time-setup-on-your-pc">Part A: One-time setup on your PC<a class="anchor" href="#part-a-one-time-setup-on-your-pc" aria-label="Link to this section">#</a></h2>
+<p>Do these steps in your own Windows Terminal / PowerShell window, <strong>not inside a Claude session</strong>. The Claude
+desktop app is a Microsoft Store build, and its shells see a virtualized AppData. Scheduled tasks must be created
+from a normal shell.</p>
+<h3 id="a1-put-the-kit-in-place">A1. Put the kit in place<a class="anchor" href="#a1-put-the-kit-in-place" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Copy the <code>geo-kit</code> folder to <strong><code>C:\geo</code></strong>. A short path avoids Windows path-length problems. You should have
+<code>C:\geo\engine\daily.py</code>, <code>C:\geo\scripts\register_tasks.ps1</code> and <code>C:\geo\GUIDE.md</code>.</li>
+<li>Create the engine's own Python environment and install its packages:<pre><code class="language-powershell">python -m venv C:\geo\.venv
+C:\geo\.venv\Scripts\python -m pip install -r C:\geo\engine\requirements.txt
+</code></pre>
+</li>
+<li>Create the database:<pre><code class="language-powershell">cd C:\geo\engine
+C:\geo\.venv\Scripts\python db.py
+</code></pre>
+From here on, &quot;<strong>run</strong> <code>x.py</code>&quot; means <code>C:\geo\.venv\Scripts\python x.py</code>, run from <code>C:\geo\engine</code>. To type
+it literally, add this line to your PowerShell profile (<code>notepad $PROFILE</code>):
+<code>function run { Push-Location C:\geo\engine; &amp; C:\geo\.venv\Scripts\python.exe @args; Pop-Location }</code></li>
+<li>Copy <code>engine\.env.example</code> to <code>engine\.env</code>. You'll fill it in over the next steps. Keep comments on their own
+lines.</li>
+<li>Make <code>C:\geo</code> a Git repo for <strong>your engine code only</strong>, so your changes are versioned. <code>clients\</code> and <code>data\</code>
+should not go in it:<pre><code class="language-powershell">cd C:\geo; git init; &quot;clients/`ndata/`nlogs/`n.venv/`nengine/.env`nengine/google_client_secret.json&quot; | Set-Content .gitignore -Encoding ascii
+</code></pre>
+</li>
+</ol>
+<h3 id="a2-claude-code-the-worker">A2. Claude Code (the worker)<a class="anchor" href="#a2-claude-code-the-worker" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Check that it's installed and signed in: <code>claude --version</code>, then run <code>claude</code> once and sign in with the plan
+you'll use. A Max plan is recommended at volume.</li>
+<li>Find its full path with <code>(Get-Command claude).Source</code> (on this PC: <code>C:\Users\idris\.local\bin\claude.exe</code>).
+Put it in <code>engine\settings.toml</code> → <code>[runner] claude_bin = &quot;C:/Users/idris/.local/bin/claude.exe&quot;</code>. Scheduled
+tasks sometimes start with a shorter PATH, and this avoids the problem.</li>
+<li>How the engine calls it, for reference: <code>claude -p --output-format json --model opus --permission-mode dontAsk --allowedTools &quot;&lt;list&gt;&quot; --add-dir &lt;client site&gt;</code>, with the task prompt on stdin. <code>dontAsk</code> means
+Claude can use <strong>only</strong> the allowed tools (read/edit files, web search, <code>python</code>, <code>git status/diff/log</code>,
+<code>npm run</code>, <code>npx</code>, <code>node</code>). It can't push, deploy or delete anything. The runner does git itself, after the
+validator passes and before your approval.</li>
+</ol>
+<h3 id="a3-github-for-clients-with-code-based-sites">A3. GitHub (for clients with code-based sites)<a class="anchor" href="#a3-github-for-clients-with-code-based-sites" aria-label="Link to this section">#</a></h3>
+<ol>
+<li><code>gh auth login</code> (GitHub.com, HTTPS, browser). Set <code>git config --global user.name</code> and <code>user.email</code>.</li>
+<li>Clients add your GitHub account as a <strong>collaborator with Write access</strong> on their site repo. Many clients have
+Vercel or Netlify preview deploys on pull requests. Ask them to keep that on, because the preview link is what
+you review.</li>
+</ol>
+<h3 id="a4-google-search-console-docs">A4. Google (Search Console + Docs)<a class="anchor" href="#a4-google-search-console-docs" aria-label="Link to this section">#</a></h3>
+<p>You'll create one OAuth &quot;desktop app&quot; so the engine can act as <strong>your Google account</strong>. Clients add this account
+to their Search Console, and it owns the client Google Docs.</p>
+<ol>
+<li>Decide which Google account: your own (idris.grant@gmail.com) or a dedicated agency Gmail such as
+<code>geo.lsimedia@gmail.com</code>. A dedicated one keeps client docs separate.</li>
+<li>Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener">https://console.cloud.google.com</a> and create a project (e.g. &quot;GEO Engine&quot;).</li>
+<li><strong>APIs &amp; Services → Library</strong>: enable <strong>Google Search Console API</strong> and <strong>Google Drive API</strong>.</li>
+<li><strong>APIs &amp; Services → OAuth consent screen</strong> (Google Auth Platform):
+<ul>
+<li>User type <strong>External</strong>. App name &quot;GEO Engine&quot;. Add your email as support and developer contact.</li>
+<li>Data access / scopes: add <code>.../auth/webmasters</code> and <code>.../auth/drive.file</code>.</li>
+<li>Audience: add your Google account as a test user. <strong>Then click &quot;Publish app&quot; (In production).</strong> This
+step matters: in &quot;Testing&quot; mode, Google expires your sign-in every <strong>7 days</strong> and the engine stops
+collecting. You don't need Google verification for your own use; you'll just see an &quot;unverified app&quot;
+warning once when you sign in.</li>
+</ul>
+</li>
+<li><strong>Clients → Create client → Desktop app</strong>, download the JSON and save it as
+<code>C:\geo\engine\google_client_secret.json</code>.</li>
+<li>Sign in once with <code>run google_auth.py</code>. A browser opens: choose the account, click through the unverified
+warning (Advanced → Go to GEO Engine), and allow. The token is saved to <code>C:\geo\data\google_token.json</code>.</li>
+<li>Test it with <code>run gsc.py</code>. Nothing should print and nothing should error, since it's only a module. The real
+test is in Part B.</li>
+</ol>
+<blockquote>
+<p><strong>About sharing Google Docs with clients:</strong> people with a Google account (including work Google accounts) open
+them directly. Clients on Microsoft 365 without a Google account get an email invite and must create a free
+Google account with their work email to edit or comment. Mention this at kickoff. The questionnaire takes them
+one minute to open.</p>
+</blockquote>
+<h3 id="a5-microsoft-365-teams-email">A5. Microsoft 365 (Teams + email)<a class="anchor" href="#a5-microsoft-365-teams-email" aria-label="Link to this section">#</a></h3>
+<p>The engine sends and reads Teams channel messages and email <strong>as you</strong> (delegated access), through Microsoft
+Graph.</p>
+<ol>
+<li>
+<p>Go to <a href="https://entra.microsoft.com" target="_blank" rel="noopener">https://entra.microsoft.com</a> → <strong>App registrations → New registration</strong>:</p>
+<ul>
+<li>Name &quot;GEO Engine&quot;, accounts &quot;<strong>this organizational directory only</strong>&quot;, no redirect URI → Register.</li>
+<li>Copy the <strong>Application (client) ID</strong> and <strong>Directory (tenant) ID</strong> into <code>.env</code> as <code>MS_CLIENT_ID</code> and
+<code>MS_TENANT_ID</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Authentication</strong> → Advanced settings → <strong>Allow public client flows: Yes</strong> → Save. This enables the device-code
+sign-in.</p>
+</li>
+<li>
+<p><strong>API permissions → Add → Microsoft Graph → Delegated</strong>. Add:</p>
+<ul>
+<li><code>User.Read</code></li>
+<li><code>Team.ReadBasic.All</code></li>
+<li><code>Channel.ReadBasic.All</code></li>
+<li><code>ChannelMessage.Send</code></li>
+<li><code>ChannelMessage.Read.All</code></li>
+<li><code>Mail.ReadWrite</code></li>
+<li><code>Mail.Send</code></li>
+</ul>
+<p>Then click <strong>Grant admin consent for &lt;your org&gt;</strong>. <code>ChannelMessage.Read.All</code> needs it, and you're the admin.</p>
+</li>
+<li>
+<p>Sign in once with <code>run msgraph.py login</code>. It prints a code: open <a href="https://microsoft.com/devicelogin" target="_blank" rel="noopener">https://microsoft.com/devicelogin</a>, enter
+it, and sign in as the mailbox that should send client mail. The token cache lives in <code>C:\geo\data\</code>.</p>
+</li>
+<li>
+<p>Test email with <code>run msgraph.py testmail you@yourdomain.com</code>.</p>
+</li>
+<li>
+<p><strong>Teams guest access</strong> (so client people can join a team): in the Teams admin center → Users → Guest access →
+<strong>On</strong>. In Entra → External Identities → External collaboration settings, allow invitations from members (or
+at least admins).</p>
+</li>
+<li>
+<p>Create one <strong>team per client</strong> later (Part C), e.g. &quot;LSI × Hope FCU&quot;, with a channel &quot;Website &amp; AI search&quot;,
+and invite the client's people as guests. <code>run msgraph.py teams</code> prints the IDs to paste into the client's
+settings.</p>
+</li>
+</ol>
+<h3 id="a6-telegram-your-control-panel-and-client-groups">A6. Telegram (your control panel, and client groups)<a class="anchor" href="#a6-telegram-your-control-panel-and-client-groups" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>In Telegram, message <strong>@BotFather</strong> → <code>/newbot</code> → name &quot;LSI GEO&quot; → username e.g. <code>lsi_geo_bot</code>. Copy the
+token into <code>.env</code> as <code>TELEGRAM_BOT_TOKEN</code>.</li>
+<li>Message <strong>@userinfobot</strong> to get your numeric user ID and put it in <code>.env</code> as <code>TELEGRAM_ADMIN_ID</code>. Only this ID
+can press buttons or run commands.</li>
+<li>Open a chat with your new bot and press <strong>Start</strong>. Bots can't message you until you do.</li>
+<li><strong>Group privacy:</strong> by default the bot only sees commands and <strong>replies to its own messages</strong> in groups. That's
+all the question-and-answer flow needs, and it's the most private option, so leave it on unless you want every
+client message forwarded to you. To change it later: BotFather → <code>/mybots</code> → Bot Settings → Group Privacy →
+Turn off, then remove and re-add the bot to groups.</li>
+</ol>
+<h3 id="a7-ai-engines-for-mention-tracking">A7. AI engines for mention tracking<a class="anchor" href="#a7-ai-engines-for-mention-tracking" aria-label="Link to this section">#</a></h3>
+<p>Add keys only for engines you want to track. Each one adds coverage and cost:</p>
+<ul>
+<li><strong>OpenAI</strong> (ChatGPT answers with web search): <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">https://platform.openai.com/api-keys</a> → <code>OPENAI_API_KEY</code></li>
+<li><strong>Google Gemini</strong> (Google-grounded answers; has a free tier): <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">https://aistudio.google.com/apikey</a> →
+<code>GEMINI_API_KEY</code></li>
+<li><strong>Perplexity</strong> (Sonar): <a href="https://www.perplexity.ai/settings/api" target="_blank" rel="noopener">https://www.perplexity.ai/settings/api</a> → <code>PERPLEXITY_API_KEY</code></li>
+<li><strong>Anthropic</strong> (Claude with web search): <a href="https://console.anthropic.com" target="_blank" rel="noopener">https://console.anthropic.com</a> → <code>ANTHROPIC_API_KEY</code></li>
+</ul>
+<p>Set a <strong>monthly spending limit</strong> in each console. A sensible start is <strong>ChatGPT + Gemini</strong>, with
+<code>samples = 2</code> in <code>settings.toml</code> (Part I has the cost math). Model names are in <code>settings.toml [mentions]</code>, so
+update them when the providers release new ones.</p>
+<h3 id="a8-optional-dataforseo">A8. Optional: DataForSEO<a class="anchor" href="#a8-optional-dataforseo" aria-label="Link to this section">#</a></h3>
+<p>Sign up at <a href="https://dataforseo.com" target="_blank" rel="noopener">https://dataforseo.com</a> (pay-as-you-go top-up) and put <code>DATAFORSEO_LOGIN</code> / <code>DATAFORSEO_PASSWORD</code> in
+<code>.env</code>. With these set, the weekly full run records Google rank for every keyword-map query. Without them,
+everything else still works from Search Console.</p>
+<h3 id="a9-review-engine-settings-toml">A9. Review <code>engine\settings.toml</code><a class="anchor" href="#a9-review-engine-settings-toml" aria-label="Link to this section">#</a></h3>
+<p>These are the defaults to know:</p>
+<ul>
+<li><code>[runner] tasks_per_run = 1</code>. With 3 runs a day, that's up to 3 tasks per client per day. Your review time is
+the limit, so raise it slowly.</li>
+<li><code>[runner] model = &quot;opus&quot;</code>, with <code>[runner.model_by_skill]</code> using <code>sonnet</code> for routine fixes.</li>
+<li><code>[comms] hold_for_review = true</code>. <strong>Every</strong> client-bound question waits for your 📤 Send. Keep it on.</li>
+<li><code>[backup] dir</code>: where the 7 rolling daily database copies go. Point it at a synced OneDrive folder that exists
+on this PC, e.g. <code>C:/Users/idris/LSI Media LLC/LSI Media LLC General Activities - Documents/GEO backups</code>.</li>
+</ul>
+<h3 id="a10-start-the-services">A10. Start the services<a class="anchor" href="#a10-start-the-services" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>Keep the PC awake. Settings → System → Power: <strong>Sleep = Never</strong> when plugged in. Stay signed in: the tasks run
+as you and only when you're signed in, because that's where Claude Code's sign-in lives. Locking the screen is
+fine.</li>
+<li>Register the scheduled tasks:<pre><code class="language-powershell">powershell -ExecutionPolicy Bypass -File C:\geo\scripts\register_tasks.ps1
+Start-ScheduledTask -TaskPath '\GEO\' -TaskName 'GEO Listener'
+</code></pre>
+This creates these tasks under Task Scheduler → <code>\GEO\</code>:
+<ul>
+<li><strong>GEO Daily</strong> at 06:00, 12:00 and 18:00</li>
+<li><strong>GEO Weekly Report</strong> on Monday at 07:00</li>
+<li><strong>GEO Learn Lift</strong> on Sunday at 21:00</li>
+<li><strong>GEO Listener</strong> at logon, restarted automatically if it stops</li>
+</ul>
+</li>
+<li>Test: send <code>/status</code> to your bot. It should answer &quot;No clients yet.&quot; Logs are in <code>C:\geo\logs\</code>.</li>
+</ol>
+<hr />
+<h2 id="part-b-prove-it-on-your-own-site-first-client-zero">Part B: Prove it on your own site first (client zero)<a class="anchor" href="#part-b-prove-it-on-your-own-site-first-client-zero" aria-label="Link to this section">#</a></h2>
+<p>Josh ran his system on his own products for most of a year before selling it. Do the same with <strong>lsi-media.com</strong>
+(WordPress) and/or <strong>meyousocial.com</strong>. You'll catch setup problems and come away with your own before/after chart.</p>
+<ol>
+<li>
+<p>Make sure the site is in <strong>your</strong> Search Console (the Google account from A4).</p>
+</li>
+<li>
+<p>In wp-admin, create an <strong>Editor</strong>-role user for the engine (e.g. <code>geo-bot</code>). Then go to Users → Profile →
+<strong>Application Passwords</strong>, create one called &quot;GEO&quot;, and add both to <code>.env</code>:</p>
+<pre><code>WP_LSI_USER=geo-bot
+WP_LSI_APP_PASSWORD=xxxx xxxx xxxx xxxx xxxx xxxx
+</code></pre>
+</li>
+<li>
+<p>Create the client (you're the &quot;client&quot;, so use your own email and Telegram):</p>
+<pre><code class="language-powershell">run new_client.py lsi --name &quot;LSI Media&quot; --domain lsi-media.com --wordpress https://lsi-media.com --gsc &quot;sc-domain:lsi-media.com&quot; --contacts idris.grant@gmail.com --channels telegram --competitors &quot;Competitor A,Competitor B&quot;
+</code></pre>
+<p>This creates:</p>
+<ul>
+<li><code>C:\geo\clients\lsi\ops\</code>, with its own Git history</li>
+<li>all 12 skills</li>
+<li>your Google folder plus an onboarding questionnaire doc, shared with you</li>
+</ul>
+</li>
+<li>
+<p>Build the research foundation <strong>interactively</strong> with Claude:</p>
+<pre><code class="language-powershell">cd C:\geo\clients\lsi\ops
+claude
+</code></pre>
+<p>Then say: <em>&quot;Use the onboard-research skill for lsi-media.com.&quot;</em> Review what it drafts:</p>
+<ul>
+<li><code>research/truth.yaml</code></li>
+<li><code>voice.md</code>, <code>icp.md</code>, <code>competitors.md</code></li>
+<li><code>prompts.csv</code>: the questions you want AI to answer with &quot;LSI Media&quot;, e.g. &quot;AI automation consultant
+for credit unions&quot;, &quot;AI readiness assessment for nonprofits&quot;</li>
+<li><code>keyword-map.csv</code></li>
+</ul>
+<p>Correct anything wrong. This is the most important hour of onboarding, because everything downstream is
+checked against these files.</p>
+</li>
+<li>
+<p>Telegram: create a group &quot;LSI GEO (self)&quot;, add your bot, and send <code>/link lsi</code> <strong>from your own account</strong>.</p>
+</li>
+<li>
+<p>First data pull and a look at what the planner wants to do:</p>
+<pre><code class="language-powershell">run collect.py --client lsi --force --full
+run planner.py --client lsi --dry-run
+</code></pre>
+<p>The dry run prints the ranked candidates, e.g. &quot;correction-research 9.6 AI states wrong facts…&quot;,
+&quot;retitle 5.6 …&quot;. It should make sense to you. If it doesn't, adjust <code>prompts.csv</code>, the keyword map, or the
+weights in <code>settings.toml</code>.</p>
+</li>
+<li>
+<p>First supervised run: <code>run runner.py --client lsi</code>. Watch the log. In Telegram you'll get &quot;🔎 Review: LSI
+Media #1 …&quot; with the WordPress <strong>preview link</strong> and buttons. Open the preview, then tap <strong>✅ Approve &amp; ship</strong>,
+<strong>❌ Reject</strong> (it asks why), or <strong>✏️ Request changes</strong> (type your notes; the next run revises it in the same
+Claude session).</p>
+</li>
+<li>
+<p>Let it run on schedule for <strong>2–4 weeks</strong>. Check <code>worklog.md</code> and the Monday report. The goal: you trust the
+reviews, the validator catches real problems, and Search Console shows movement you can put in a pitch.</p>
+</li>
+</ol>
+<hr />
+<h2 id="part-c-onboard-a-paying-client-day-0-to-day-7">Part C: Onboard a paying client (day 0 to day 7)<a class="anchor" href="#part-c-onboard-a-paying-client-day-0-to-day-7" aria-label="Link to this section">#</a></h2>
+<h3 id="c1-before-kickoff-contract-signed">C1. Before kickoff (contract signed)<a class="anchor" href="#c1-before-kickoff-contract-signed" aria-label="Link to this section">#</a></h3>
+<p>Send the client this <strong>access checklist</strong>. Put it in your welcome email or the first message on their channel.</p>
+<ol>
+<li><strong>Search Console:</strong> Settings → Users and permissions → Add user → <em>your Google account</em> → <strong>Full</strong>.</li>
+<li><strong>Website:</strong>
+<ul>
+<li>Code site: add your GitHub user as a collaborator (Write) on the site repo, and confirm which branch
+deploys to production.</li>
+<li>WordPress: create an <strong>Editor</strong> user for you and send the username. You'll create the application password
+yourself after the first login. Never accept an admin account.</li>
+</ul>
+</li>
+<li><strong>Communication:</strong> pick one of these.
+<ul>
+<li><strong>Teams:</strong> accept the guest invite to &quot;LSI × &lt;Client&gt;&quot;.</li>
+<li><strong>Telegram:</strong> join the group link you send.</li>
+<li><strong>Email:</strong> nothing to do. Questions come from your address with &quot;[Q12]&quot;-style subjects; they just reply.</li>
+</ul>
+</li>
+<li><strong>IndexNow (optional):</strong>
+<ul>
+<li>Code site: add a file <code>&lt;key&gt;.txt</code> containing the key at the site root (generate a 32-character key at
+<a href="https://www.bing.com/indexnow/getstarted" target="_blank" rel="noopener">https://www.bing.com/indexnow/getstarted</a>).</li>
+<li>WordPress: install Microsoft's IndexNow plugin and leave the key blank in your settings; the plugin pings on
+publish.</li>
+</ul>
+</li>
+<li><strong>Who approves</strong> what (comparison pages? pricing mentions?), and their turnaround time.</li>
+</ol>
+<h3 id="c2-create-the-client">C2. Create the client<a class="anchor" href="#c2-create-the-client" aria-label="Link to this section">#</a></h3>
+<p>Code-based site:</p>
+<pre><code class="language-powershell">run new_client.py acme --name &quot;Acme&quot; --domain acme.com --git-repo https://github.com/acme/website.git --gsc &quot;sc-domain:acme.com&quot; --contacts &quot;founder@acme.com,marketing@acme.com&quot; --channels teams,email --competitors &quot;Zendesk,Freshdesk,Help Scout&quot;
+</code></pre>
+<p>WordPress site: use <code>--wordpress https://site.org</code> instead of <code>--git-repo</code>, and add <code>WP_&lt;SLUG&gt;_USER</code> and
+<code>WP_&lt;SLUG&gt;_APP_PASSWORD</code> to <code>.env</code> (slug uppercase, dashes become underscores).</p>
+<p>Then open <code>clients\&lt;slug&gt;\ops\client.toml</code> and complete it:</p>
+<ul>
+<li><code>brand_aliases</code>: other names AI might use</li>
+<li><strong>Git sites:</strong> <code>content_dir</code>, <code>build_cmd</code> (e.g. <code>npm ci &amp;&amp; npm run build</code>), <code>test_cmd</code>, and
+<code>required_frontmatter</code> (look at an existing post)</li>
+<li><code>[comms]</code>: for Teams, run <code>run msgraph.py teams</code> and paste <code>teams_team_id</code> and <code>teams_channel_id</code>. The
+<strong>first</strong> channel listed is the one used.</li>
+<li><code>[approvals] client_must_approve</code>: the skills the client signs off on</li>
+<li><code>[limits]</code>: match what you sold (e.g. 12 articles a month)</li>
+</ul>
+<p>Optionally, create a private GitHub repo for the ops folder and run
+<code>git -C C:\geo\clients\&lt;slug&gt;\ops remote add origin &lt;url&gt;</code>. The engine pushes after each run, so your work for
+that client is backed up and versioned.</p>
+<h3 id="c3-questionnaire-google-doc">C3. Questionnaire (Google Doc)<a class="anchor" href="#c3-questionnaire-google-doc" aria-label="Link to this section">#</a></h3>
+<p><code>new_client.py</code> created &quot;&lt;Client&gt; – onboarding questions&quot; in their Google folder and shared it with the
+contacts as <strong>editor</strong>; they get Google's email. Ask them to fill it in within 3 days. Each daily run pulls the
+doc. When it changes, an <strong>ingest-client-docs</strong> task folds the answers into <code>truth.yaml</code>, <code>voice.md</code> and the
+other research files, and you review that like any other change.</p>
+<h3 id="c4-research-foundation">C4. Research foundation<a class="anchor" href="#c4-research-foundation" aria-label="Link to this section">#</a></h3>
+<p>Same as Part B step 4: run <code>claude</code> in the client's ops folder, then use the <strong>onboard-research</strong> skill. Review
+carefully, especially:</p>
+<ul>
+<li><code>truth.yaml</code>, plus <code>checks:</code> entries for numbers that will repeat</li>
+<li><code>prompts.csv</code>: 30–60 prompts, the top 5 marked <code>daily</code>, and <code>fact</code> prompts with an <code>expect</code> regex</li>
+<li><code>keyword-map.csv</code></li>
+</ul>
+<h3 id="c5-facts-sheet-google-doc">C5. Facts sheet (Google Doc)<a class="anchor" href="#c5-facts-sheet-google-doc" aria-label="Link to this section">#</a></h3>
+<p><code>run gdocs.py facts --client &lt;slug&gt;</code> creates &quot;&lt;Client&gt; – facts we will use&quot;, shared as editor. The client
+corrects it directly. Changes come back automatically through the same ingest task as C3.</p>
+<h3 id="c6-link-the-channel">C6. Link the channel<a class="anchor" href="#c6-link-the-channel" aria-label="Link to this section">#</a></h3>
+<ul>
+<li><strong>Telegram:</strong> create a group &quot;&lt;Client&gt; × LSI&quot;, add the client people and your bot, and send
+<code>/link &lt;slug&gt;</code> from your account. The bot confirms with &quot;Connected to &lt;Client&gt;.&quot;</li>
+<li><strong>Teams:</strong> check <code>client.toml</code> has the team and channel IDs. The first question posts in that channel; the
+client replies <strong>in the thread</strong>.</li>
+<li><strong>Email:</strong> check <code>emails</code> in <code>client.toml</code>. The client just replies to the email.</li>
+</ul>
+<h3 id="c7-baseline-and-first-run">C7. Baseline and first run<a class="anchor" href="#c7-baseline-and-first-run" aria-label="Link to this section">#</a></h3>
+<pre><code class="language-powershell">run collect.py --client &lt;slug&gt; --force --full
+run planner.py --client &lt;slug&gt; --dry-run
+run runner.py --client &lt;slug&gt;
+</code></pre>
+<p>The first Monday report records the <strong>baseline</strong> (week one) that every later report compares against. Tell the
+client on the kickoff call: <em>&quot;Search and AI answers take 6–12 weeks to move. You'll see work shipping every week,
+and the numbers start moving after that.&quot;</em></p>
+<h3 id="c8-hand-over-to-the-schedule">C8. Hand over to the schedule<a class="anchor" href="#c8-hand-over-to-the-schedule" aria-label="Link to this section">#</a></h3>
+<p>Nothing else to do. <code>active = true</code> is the default, so the 3x-daily job picks the client up.</p>
+<hr />
+<h2 id="part-d-running-it">Part D: Running it<a class="anchor" href="#part-d-running-it" aria-label="Link to this section">#</a></h2>
+<h3 id="every-day-about-15-minutes-per-10-clients-twice-a-day">Every day (about 15 minutes per 10 clients, twice a day)<a class="anchor" href="#every-day-about-15-minutes-per-10-clients-twice-a-day" aria-label="Link to this section">#</a></h3>
+<p>Everything comes to your Telegram chat with the bot:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Message</th>
+<th>What to do</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔎 <strong>Review: Client #N</strong> + link</td>
+<td>Open the PR, preview deploy or WordPress preview. Check facts, tone, links and claims. Tap ✅, ❌ (you'll be asked why) or ✏️ (type notes).</td>
+</tr>
+<tr>
+<td>📝 <strong>Draft question for Client</strong></td>
+<td>Read it. Tap 📤 Send, or 🗑 Drop (the task continues without the fact). Good questions are specific and answerable in one line.</td>
+</tr>
+<tr>
+<td>💬 <strong>Client answered Q12</strong></td>
+<td>Nothing. The task resumes on the next run.</td>
+</tr>
+<tr>
+<td>👍 <strong>Client approved #N</strong></td>
+<td>Tap ✅ Approve &amp; ship.</td>
+</tr>
+<tr>
+<td>✏️ <strong>Client asked for changes</strong></td>
+<td>Nothing. It's revised on the next run, then comes back for review.</td>
+</tr>
+<tr>
+<td>❌ <strong>Task failed</strong></td>
+<td>Read the reason. Usually a fact gap, a broken build, or a validator rule. Fix the cause, or ignore it and the planner moves on.</td>
+</tr>
+<tr>
+<td>💬 <strong>Client (name): message</strong></td>
+<td>An unprompted message. Answer it in the client's channel yourself.</td>
+</tr>
+</tbody>
+</table></div>
+<p>Commands: <code>/queue</code> re-sends everything waiting for review, <code>/status</code> shows task counts and open questions per
+client, <code>/run &lt;slug&gt;</code> starts a run now.</p>
+<p><strong>Review checklist (30–90 seconds each):</strong></p>
+<ul>
+<li><strong>Is it true?</strong> The validator checked prices, numbers and forbidden phrases, but read the claims anyway.</li>
+<li><strong>Is it useful</strong> to the buyer, and does it answer the question in the first two sentences?</li>
+<li><strong>Would you sign it?</strong> No hype, fair to competitors, sources linked.</li>
+<li><strong>Does it fit the site?</strong> Formatting, internal links, no broken layout in the preview.</li>
+</ul>
+<h3 id="every-monday">Every Monday<a class="anchor" href="#every-monday" aria-label="Link to this section">#</a></h3>
+<ol>
+<li>07:00: reports are generated. For each client you get &quot;📊 Report ready&quot; with the Google Doc link and summary.
+Skim it and tap <strong>📤 Send to client</strong>. They get the link on their channel; the doc is in their shared folder.</li>
+<li>Look at the planner's view of each client (<code>run planner.py --client &lt;slug&gt; --dry-run</code>). Does the top of the
+list match your judgment? If not, edit <code>prompts.csv</code> or the keyword map, or adjust the weights.</li>
+<li>Spot-check the AI answers. In SQLite or the report's examples, see what ChatGPT and Gemini actually say about
+the client.</li>
+</ol>
+<h3 id="every-month">Every month<a class="anchor" href="#every-month" aria-label="Link to this section">#</a></h3>
+<ul>
+<li><strong>Refresh facts:</strong> ask each client &quot;anything changed in pricing, features or team?&quot; and update <code>truth.yaml</code>. The
+next runs fix pages that are now wrong.</li>
+<li><strong>Re-check competitor prices</strong> in <code>competitors.md</code>. The comparison-page skill uses them.</li>
+<li><strong>Prune prompts:</strong> drop prompts nobody asks and add new ones from the client's sales calls.</li>
+<li>Check API spend in each provider console against Part I.</li>
+<li>After 2–3 months, <code>learn_lift.py</code> replaces the guessed weights with measured ones. Check <code>C:\geo\logs\lift.log</code>.</li>
+</ul>
+<h3 id="offboarding-a-client">Offboarding a client<a class="anchor" href="#offboarding-a-client" aria-label="Link to this section">#</a></h3>
+<p>Set <code>active = false</code> in <code>client.toml</code>. Then:</p>
+<ul>
+<li>Revoke your access: Search Console user, GitHub collaborator, WordPress user/application password, Teams guests.</li>
+<li>Unshare or transfer the Google folder.</li>
+<li>Remove their <code>WP_*</code> lines from <code>.env</code>.</li>
+</ul>
+<p>Keep the ops repo in case they return; it's your record of the work.</p>
+<hr />
+<h2 id="part-e-reference">Part E: Reference<a class="anchor" href="#part-e-reference" aria-label="Link to this section">#</a></h2>
+<h3 id="files-and-folders">Files and folders<a class="anchor" href="#files-and-folders" aria-label="Link to this section">#</a></h3>
+<pre><code>C:\geo\
+  engine\                 the code (shared by all clients)
+    settings.toml         global settings          .env   secrets (never share)
+    daily.py              scheduled job: collect → plan → run → backup
+    collect.py            crawl.py  gsc.py  mentions.py  ai_engines.py  dataforseo.py  gdocs.sync
+    planner.py            candidate generation + scoring
+    runner.py             Claude sessions, validation loop, PR/draft delivery, approve/reject/changes
+    validate.py           deterministic checks
+    comms.py              Telegram / Teams / email + admin notifications
+    listener.py           always-on bot + reply polling
+    weekly_report.py      learn_lift.py   new_client.py   ask_client.py   wp.py   indexnow.py
+    telegram_api.py       msgraph.py      google_auth.py  gdocs.py        research.py  db.py  common.py
+    skills\               the 12 SKILL.md procedures (copied into each client)
+    templates\            files for new clients + questionnaire
+  clients\&lt;slug&gt;\
+    ops\                  YOUR private repo for this client
+      client.toml  CLAUDE.md  worklog.md
+      research\  truth.yaml voice.md icp.md competitors.md prompts.csv keyword-map.csv sources\ client-docs\
+      out\&lt;task&gt;\         WordPress drafts, notes, specs
+      reports\            HTML copy of each weekly report
+      .claude\skills\     this client's copy of the skills
+    site\                 the client's website repo (git clients only)
+  data\geo.db             SQLite: GSC data, pages, AI answers, tasks, questions, docs
+  logs\                   one log per component
+</code></pre>
+<h3 id="what-gets-collected-daily-unless-noted">What gets collected (daily unless noted)<a class="anchor" href="#what-gets-collected-daily-unless-noted" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Source</th>
+<th>Used for</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Site clicks and impressions per day; page per day; query × page (28 days)</td>
+<td>Search Console API</td>
+<td>Planner, reports, lift learning</td>
+</tr>
+<tr>
+<td>Index status for 60 pages a day, rotating</td>
+<td>URL Inspection API</td>
+<td>index-fix tasks</td>
+</tr>
+<tr>
+<td>Sitemap crawl: status, redirects, title, meta, H1s, words, canonical (weekly, or first run)</td>
+<td>crawl.py</td>
+<td>page-fixes tasks</td>
+</tr>
+<tr>
+<td>AI answers: daily prompts every day, all prompts on Mondays, N samples × each engine</td>
+<td>ai_engines.py</td>
+<td>ai-gap, fact-correction, reports</td>
+</tr>
+<tr>
+<td>Google rank for keyword-map queries (Mondays, optional)</td>
+<td>DataForSEO</td>
+<td>reports, your judgment</td>
+</tr>
+<tr>
+<td>Questionnaire and facts docs</td>
+<td>Google Drive</td>
+<td>ingest-client-docs tasks</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="how-the-planner-decides-score-opportunity-lift-confidence-bo">How the planner decides (score = opportunity × lift × confidence × boost ÷ effort)<a class="anchor" href="#how-the-planner-decides-score-opportunity-lift-confidence-bo" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Task (skill)</th>
+<th>Opportunity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Query at position 4–20 with ≥ 100 impressions / 28 days</td>
+<td>refresh-page (search goal)</td>
+<td>extra clicks if it reached position 3</td>
+</tr>
+<tr>
+<td>Page CTR &lt; half the expected CTR for its position (≤ 10)</td>
+<td>retitle</td>
+<td>missing clicks</td>
+</tr>
+<tr>
+<td>2+ pages each with ≥ 20% of a query's impressions</td>
+<td>cannibalization-review (recommendation only)</td>
+<td>2% of impressions</td>
+</tr>
+<tr>
+<td>Tracked prompt: client named &lt; 34% of the time, competitors ≥ 50%</td>
+<td>refresh-page (AI goal) if <code>target_url</code> set, else comparison-page or write-article</td>
+<td>150 × miss rate (× 2 for daily prompts)</td>
+</tr>
+<tr>
+<td>Fact prompt answered wrongly ≥ half the time</td>
+<td>correction-research (boost × 2)</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Keyword-map row <code>planned</code> with no URL</td>
+<td>write-article / comparison-page / build-free-tool (by intent)</td>
+<td>3% of volume</td>
+</tr>
+<tr>
+<td>Pages in GSC but not indexed after 14 days</td>
+<td>index-fix (batch of 10)</td>
+<td>15 per page</td>
+</tr>
+<tr>
+<td>404s in sitemap, redirect chains, missing or duplicate titles/meta, H1 ≠ 1</td>
+<td>page-fixes (batch of 15)</td>
+<td>8 per page</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Filters applied before scoring:</strong></p>
+<ul>
+<li>No duplicate of an open task.</li>
+<li>Nothing touched in the last 14 days (<code>cooldown_days</code>).</li>
+<li>Nothing rejected in the last 30 days.</li>
+<li>Monthly caps from <code>[limits]</code>.</li>
+</ul>
+<h3 id="validator-checks-validate-py">Validator checks (validate.py)<a class="anchor" href="#validator-checks-validate-py" aria-label="Link to this section">#</a></h3>
+<p><strong>Hard fails:</strong></p>
+<ul>
+<li>A price within 80 characters after the brand name that isn't in <code>truth.yaml</code></li>
+<li>Any <code>claims_forbidden</code> phrase</li>
+<li>A number matching a <code>checks:</code> pattern that differs from <code>expect</code></li>
+<li>A competitor price with no source link in the same paragraph</li>
+<li>Placeholder text (TODO, lorem ipsum, &quot;[insert&quot;)</li>
+<li>More than 13 links per 1,000 words</li>
+<li>Missing required front matter</li>
+<li><strong>Git sites:</strong> a failing <code>build_cmd</code> or <code>test_cmd</code></li>
+</ul>
+<p><strong>Warnings</strong> (shown in your review message): statistics with no source link.</p>
+<p>Claude must run the validator itself, and the runner runs it again. If it fails, Claude gets the errors and up to
+2 tries to fix them; after that the task fails.</p>
+<h3 id="skills-engine-skills">Skills (engine/skills)<a class="anchor" href="#skills-engine-skills" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>Produces</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>seo-geo-core</td>
+<td>Shared rules (how AI engines pick sources, writing rules, never-do list)</td>
+</tr>
+<tr>
+<td>onboard-research</td>
+<td>truth.yaml, voice, ICP, competitors, prompt set, keyword map (interactive)</td>
+</tr>
+<tr>
+<td>write-article</td>
+<td>New article researched from top results and AI-cited sources</td>
+</tr>
+<tr>
+<td>refresh-page</td>
+<td>Targeted improvement of an existing page (search or AI goal)</td>
+</tr>
+<tr>
+<td>retitle</td>
+<td>New title and meta (3 options in notes)</td>
+</tr>
+<tr>
+<td>comparison-page</td>
+<td>Fair, sourced &quot;alternatives&quot; / &quot;vs&quot; page (client approves through a Google Doc)</td>
+</tr>
+<tr>
+<td>build-free-tool</td>
+<td>Calculator/generator with tests, plus an explainer page</td>
+</tr>
+<tr>
+<td>page-fixes</td>
+<td>Technical fixes, with a table of manual steps</td>
+</tr>
+<tr>
+<td>index-fix</td>
+<td>Diagnosis and fixes for unindexed pages</td>
+</tr>
+<tr>
+<td>correction-research</td>
+<td>Fixes the client's own pages; drafts outreach for third-party errors (never sent automatically)</td>
+</tr>
+<tr>
+<td>cannibalization-review</td>
+<td>Merge / re-target / leave recommendation</td>
+</tr>
+<tr>
+<td>ingest-client-docs</td>
+<td>Folds Google Doc edits into the research files</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="channel-behavior">Channel behavior<a class="anchor" href="#channel-behavior" aria-label="Link to this section">#</a></h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th></th>
+<th>Telegram</th>
+<th>Teams</th>
+<th>Email</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Question appears as</td>
+<td>Bot message in the client group</td>
+<td>New post in the client's channel</td>
+<td>Email from your mailbox, subject &quot;[Q12] Client: …&quot;</td>
+</tr>
+<tr>
+<td>Client answers by</td>
+<td>Replying to that message</td>
+<td>Replying in the thread</td>
+<td>Replying to the email</td>
+</tr>
+<tr>
+<td>Picked up</td>
+<td>Instantly (long polling)</td>
+<td>Within 2 minutes</td>
+<td>Within 2 minutes (only the new text of the reply)</td>
+</tr>
+<tr>
+<td>Other messages</td>
+<td>Forwarded to you (if group privacy is off)</td>
+<td>Not read</td>
+<td>Not read</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="part-f-customizing">Part F: Customizing<a class="anchor" href="#part-f-customizing" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Add a skill:</strong>
+<ol>
+<li>Create <code>engine/skills/&lt;name&gt;/SKILL.md</code> with <code>name</code> and <code>description</code> front matter.</li>
+<li>Copy it into existing clients' <code>ops/.claude/skills/</code>.</li>
+<li>Add a generator in <code>planner.py</code> that emits <code>cand(&quot;&lt;name&gt;&quot;, …)</code>.</li>
+<li>Add lift and effort values in <code>settings.toml</code>.</li>
+</ol>
+</li>
+<li><strong>Add a validator rule:</strong> add it in <code>validate.check_file</code>. Errors block the change; warnings only show in your
+review.</li>
+<li><strong>Client-specific numeric rules:</strong> add <code>checks:</code> entries in <code>truth.yaml</code>. No code needed.</li>
+<li><strong>Change cadence:</strong> edit the triggers in <code>scripts/register_tasks.ps1</code> and re-run it.</li>
+<li><strong>Track more or fewer engines:</strong> <code>[mentions] engines</code>, <code>samples</code>, and which keys are in <code>.env</code>.</li>
+<li><strong>Let questions go out without you:</strong> set <code>[comms] hold_for_review = false</code>. Not recommended.</li>
+</ul>
+<hr />
+<h2 id="part-g-troubleshooting">Part G: Troubleshooting<a class="anchor" href="#part-g-troubleshooting" aria-label="Link to this section">#</a></h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Symptom</th>
+<th>Cause / fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Google token missing or revoked&quot;</td>
+<td>Re-run <code>google_auth.py</code>. If it recurs weekly, the consent screen is still in <strong>Testing</strong>; publish it (A4.4).</td>
+</tr>
+<tr>
+<td>&quot;Microsoft sign-in needed&quot;</td>
+<td>Run <code>msgraph.py login</code>. Refresh tokens last about 90 days without use, and tenant policies can shorten that.</td>
+</tr>
+<tr>
+<td>Graph 403 on Teams</td>
+<td>Admin consent not granted (A5.3), or you're not a member of that team.</td>
+</tr>
+<tr>
+<td>Telegram buttons do nothing</td>
+<td>Is the listener running? Check Task Scheduler → \GEO\GEO Listener → History, and <code>logs\listener.log</code>. Is <code>TELEGRAM_ADMIN_ID</code> your ID?</td>
+</tr>
+<tr>
+<td>Client replies in Telegram aren't recorded</td>
+<td>They must <strong>reply to</strong> the bot's question (swipe or right-click → Reply), or turn group privacy off.</td>
+</tr>
+<tr>
+<td>&quot;No Telegram group linked&quot;</td>
+<td>Send <code>/link &lt;slug&gt;</code> in the group, from your account.</td>
+</tr>
+<tr>
+<td>Task failed: &quot;site repo has uncommitted changes&quot;</td>
+<td>Someone edited <code>clients\&lt;slug&gt;\site</code> by hand. Commit or discard there, then <code>/run &lt;slug&gt;</code>.</td>
+</tr>
+<tr>
+<td>Task failed: build failed</td>
+<td>Run the client's <code>build_cmd</code> yourself in <code>site\</code>. Fix the dependency or Node version, or blank out <code>build_cmd</code>.</td>
+</tr>
+<tr>
+<td><code>gh pr create</code> fails</td>
+<td><code>gh auth status</code>; collaborator access; branch protection rules.</td>
+</tr>
+<tr>
+<td>WordPress 401</td>
+<td>Wrong application password, or a security plugin blocks the REST API for that user. Allow REST for the Editor user.</td>
+</tr>
+<tr>
+<td>Page-builder pages (Avada) get mangled</td>
+<td>The refresh-page skill writes notes instead when it can't edit safely. Edit those by hand or with the Avada skill.</td>
+</tr>
+<tr>
+<td>Nothing planned for a client</td>
+<td>No data yet (GSC needs a few days), empty prompts and keyword map, or everything is in cooldown. Run <code>planner.py --dry-run</code> to see.</td>
+</tr>
+<tr>
+<td>Mentions all 0</td>
+<td>Check the brand name and <code>brand_aliases</code>. Run one prompt by hand in ChatGPT to compare.</td>
+</tr>
+<tr>
+<td>Spending too much on AI tracking</td>
+<td>Lower <code>samples</code>, fewer <code>daily</code> prompts, fewer engines (Part I).</td>
+</tr>
+<tr>
+<td>Claude usage limits hit</td>
+<td><code>tasks_per_run = 1</code>, more skills on <code>sonnet</code> in <code>model_by_skill</code>, fewer clients per run, or move to API billing with <code>max_budget_usd</code>.</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="part-h-security-compliance-offboarding">Part H: Security, compliance, offboarding<a class="anchor" href="#part-h-security-compliance-offboarding" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>Secrets</strong> live only in <code>engine\.env</code>, <code>engine\google_client_secret.json</code>, and <code>data\*token*</code>. They're not in
+any repo. Back up <code>.env</code> to your password manager.</li>
+<li><strong>Least privilege:</strong>
+<ul>
+<li>WordPress Editor (never Admin)</li>
+<li>GitHub Write on one repo (no org admin)</li>
+<li>Search Console Full user (not Owner)</li>
+<li>Graph delegated scopes only</li>
+<li>Google <code>drive.file</code> (the engine sees only files it created)</li>
+</ul>
+</li>
+<li><strong>What Claude can do</strong> in a task: read/edit files in that client's folders, search the web, run Python, npm/npx
+and node, and read git status. It cannot commit, push, publish, or message anyone. Your button does that.
+<code>Bash(python *)</code> effectively allows arbitrary code, so only install skills you've read.</li>
+<li><strong>Nothing reaches a client</strong> without your tap (questions, reports), except &quot;Shipped: …&quot; notices after <em>you</em>
+approve a change (turn off with <code>announce_shipped = false</code>).</li>
+<li><strong>No astroturfing, no fake reviews, no ranking guarantees.</strong> These are written into every skill and the
+contract.</li>
+<li><strong>Regulated clients (credit unions, banks):</strong>
+<ul>
+<li>Add rate/APY wording rules and required disclosures to <code>truth.yaml</code> (<code>claims_forbidden</code>, <code>checks</code>).</li>
+<li>Put <strong>every</strong> content skill in <code>client_must_approve</code> so their compliance officer signs off in the Google Doc.</li>
+</ul>
+</li>
+<li><strong>Client data:</strong>
+<ul>
+<li>It stays on your PC, in the client's own repos, and in Google Docs you share with them.</li>
+<li>AI answers sampled from engines are public-style answers, not client data.</li>
+<li>Don't put client customer data in prompts.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2 id="part-i-costs-and-capacity">Part I: Costs and capacity<a class="anchor" href="#part-i-costs-and-capacity" aria-label="Link to this section">#</a></h2>
+<p><strong>AI-answer tracking cost per client per week</strong> ≈ answers × price per answer:</p>
+<ul>
+<li>Answers per week = (daily prompts × 6 days + all prompts) × engines × samples.</li>
+<li>Defaults (5 daily, 40 total, 4 engines, 3 samples): (30 + 40) × 12 = <strong>840 answers/week</strong>.</li>
+<li>At roughly 1–3¢ per search-grounded answer, that's <strong>$8–25/week per client</strong>.</li>
+<li>Lean start (5 daily, 40 total, 2 engines incl. Gemini's free tier, 2 samples): 280 answers/week, about
+<strong>$2–6/week per client</strong>.</li>
+<li>Check each provider's current pricing; search-tool charges change.</li>
+</ul>
+<p><strong>Claude:</strong></p>
+<ul>
+<li>With <code>tasks_per_run = 1</code>, each client gets up to 3 task sessions a day.</li>
+<li>Opus for content, Sonnet for routine work. A Max plan covers a handful of clients. At 20–30 clients, expect to
+use API billing or several seats; track <code>cost_usd</code> per task in the database.</li>
+</ul>
+<p><strong>Your time is the real limit:</strong></p>
+<ul>
+<li>Each review takes 1–2 minutes. At 3 tasks/day/client, that's about 5 minutes per client per day: 10 clients
+≈ 1 hour/day, 30 clients ≈ 2.5 hours/day, plus Monday reports.</li>
+<li><strong>Hire an editor</strong> before raising <code>tasks_per_run</code>. Give them their own Telegram account and add a second
+admin ID. That's a small code change in <code>listener.py</code>.</li>
+</ul>
+<p><strong>Pricing anchor (from the video):</strong> FirstIndex charges $1,500/month (12-month term) or $2,000/month
+(month-to-month after 3 months). Start lower for your first 3–5 clients in exchange for a case study.</p>
+<hr />
+<h2 id="command-cheat-sheet">Command cheat sheet<a class="anchor" href="#command-cheat-sheet" aria-label="Link to this section">#</a></h2>
+<p>(<code>run</code> = <code>C:\geo\.venv\Scripts\python</code>, from <code>C:\geo\engine</code>)</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Do this</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>New client</td>
+<td><code>run new_client.py &lt;slug&gt; --name … --domain … (--git-repo URL / --wordpress URL) --gsc … --contacts … --channels … --competitors …</code></td>
+</tr>
+<tr>
+<td>Pull data now</td>
+<td><code>run collect.py --client &lt;slug&gt; --force [--full]</code></td>
+</tr>
+<tr>
+<td>See what it would do</td>
+<td><code>run planner.py --client &lt;slug&gt; --dry-run</code></td>
+</tr>
+<tr>
+<td>Run tasks now</td>
+<td><code>run runner.py --client &lt;slug&gt;</code> (or <code>/run &lt;slug&gt;</code> in Telegram)</td>
+</tr>
+<tr>
+<td>Re-run one task</td>
+<td><code>run runner.py --task &lt;id&gt;</code></td>
+</tr>
+<tr>
+<td>Check a file</td>
+<td><code>run validate.py --client &lt;slug&gt; --files path\to\post.md</code> / <code>--git</code></td>
+</tr>
+<tr>
+<td>Questionnaire / facts doc</td>
+<td><code>run gdocs.py questionnaire --client &lt;slug&gt;</code> / <code>run gdocs.py facts --client &lt;slug&gt;</code></td>
+</tr>
+<tr>
+<td>Report now</td>
+<td><code>run weekly_report.py --client &lt;slug&gt;</code></td>
+</tr>
+<tr>
+<td>Teams IDs</td>
+<td><code>run msgraph.py teams</code></td>
+</tr>
+<tr>
+<td>Re-sign in</td>
+<td><code>run google_auth.py</code> / <code>run msgraph.py login</code></td>
+</tr>
+<tr>
+<td>Look at the database</td>
+<td><code>sqlite3 C:\geo\data\geo.db</code> (or DB Browser for SQLite, free)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="what-was-tested-oct-21-2026-on-winai5">What was tested (Oct 21, 2026, on WINAI5)<a class="anchor" href="#what-was-tested-oct-21-2026-on-winai5" aria-label="Link to this section">#</a></h2>
+<ul>
+<li><strong>39 automated checks passed</strong> with every external API mocked:
+<ul>
+<li>client creation; parsing each AI engine's response format; mention scoring and wrong-fact detection</li>
+<li>all 7 planner signals, plus &quot;wrong facts rank first&quot; and no duplicate tasks</li>
+<li>questions held for your Send button → Telegram reply → task resumes with the answer</li>
+<li>client approval replies; reviewer change requests</li>
+<li>every validator rule; WordPress block-markup handling; the weekly report; lift learning</li>
+<li>database backup; the crawler's HTML parsing</li>
+</ul>
+</li>
+<li><strong>Live Claude Code check:</strong> the runner's exact headless command edited a file through <code>--add-dir</code>, saw the
+task's client and task IDs, and resumed the same session afterwards.</li>
+<li><strong>Git delivery check</strong> (using a local repo in place of GitHub; the <code>gh</code> call was simulated): it created branch
+<code>geo/&lt;id&gt;-&lt;title&gt;</code>, committed, pushed, recorded the PR, and sent the review message with buttons.</li>
+<li><strong>Not yet run against live services</strong> (they need your accounts): Search Console, Google Drive/Docs, Microsoft
+Graph (Teams/Outlook), the Telegram API, the AI engine APIs, DataForSEO, WordPress REST, and <code>gh pr create</code> and
+<code>gh pr merge</code>. Part B is designed as that first live test, on your own site.</li>
+</ul>
+
+<footer>Generated from GUIDE.md by scripts/build_guide_html.py. Edit the Markdown, then re-run the script.</footer>
+</main>
+</div>
+<script>
+document.querySelectorAll('main pre').forEach(pre=>{
+  const box=document.createElement('div');box.className='codebox';pre.parentNode.insertBefore(box,pre);box.appendChild(pre);
+  const b=document.createElement('button');b.className='copy';b.type='button';b.textContent='Copy';
+  b.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(pre.innerText.replace(/\n$/,''));b.textContent='Copied';}
+    catch(e){b.textContent='Select + Ctrl+C';}setTimeout(()=>b.textContent='Copy',1600);});
+  box.appendChild(b);
+});
+const links=[...document.querySelectorAll('nav.toc a[href^="#"]')];
+const byId=Object.fromEntries(links.map(a=>[a.getAttribute('href').slice(1),a]));
+const heads=[...document.querySelectorAll('main h2[id],main h3[id]')];
+function spy(){let cur=heads[0];for(const h of heads){if(h.getBoundingClientRect().top<120)cur=h;else break;}
+  links.forEach(a=>a.classList.remove('active'));const a=cur&&byId[cur.id];if(a){a.classList.add('active');
+  const r=a.getBoundingClientRect(),n=a.closest('nav').getBoundingClientRect();if(r.top<n.top||r.bottom>n.bottom)a.scrollIntoView({block:'nearest'});}}
+document.addEventListener('scroll',spy,{passive:true});spy();
+document.querySelectorAll('details.mobile-toc a').forEach(a=>a.addEventListener('click',()=>a.closest('details').open=false));
+const root=document.documentElement;
+function setTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttribute('data-theme');try{t?localStorage.setItem('guide-theme',t):localStorage.removeItem('guide-theme')}catch(e){}}
+try{const t=localStorage.getItem('guide-theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
+document.getElementById('theme').addEventListener('click',()=>{const dark=root.getAttribute('data-theme')==='dark'||
+  (!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme: dark)').matches);setTheme(dark?'light':'dark');});
+document.getElementById('print').addEventListener('click',()=>window.print());
+</script>
+</body>
+</html>
