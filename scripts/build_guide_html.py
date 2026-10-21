@@ -2,6 +2,7 @@
 from GUIDE.md. Re-run after editing GUIDE.md:
 
     C:\\geo\\.venv\\Scripts\\python C:\\geo\\scripts\\build_guide_html.py
+    ... build_guide_html.py --artifact <out.html>   page body for a hosted claude.ai artifact (no print button)
 
 Needs markdown-it-py (CommonMark, so code blocks inside numbered steps render correctly):
     C:\\geo\\.venv\\Scripts\\python -m pip install markdown-it-py
@@ -21,16 +22,17 @@ CSS = """
 --code-bg:#f3f1ec;--code-text:#1d1f23;--pre-bg:#16181d;--pre-text:#e8e6e1;--callout:#fff7e0;--callout-line:#e0b84a;--th:#f1efe9}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121418;--panel:#191c21;--text:#e6e4df;--muted:#a1a7b0;
 --line:#2b3038;--accent:#7fb0ff;--accent-soft:#1c2a40;--code-bg:#232830;--code-text:#e6e4df;--pre-bg:#0c0e11;--pre-text:#e6e4df;
---callout:#2a2414;--callout-line:#a8862e;--th:#1f2329}}
+--callout:#2a2414;--callout-line:#a8862e;--th:#1f2329;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#121418;--panel:#191c21;--text:#e6e4df;--muted:#a1a7b0;--line:#2b3038;--accent:#7fb0ff;
---accent-soft:#1c2a40;--code-bg:#232830;--code-text:#e6e4df;--pre-bg:#0c0e11;--pre-text:#e6e4df;--callout:#2a2414;--callout-line:#a8862e;--th:#1f2329}
+--accent-soft:#1c2a40;--code-bg:#232830;--code-text:#e6e4df;--pre-bg:#0c0e11;--pre-text:#e6e4df;--callout:#2a2414;--callout-line:#a8862e;--th:#1f2329;color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:16px}
 body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,
 "Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
 a{color:var(--accent);text-underline-offset:2px}
 .layout{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1240px;margin:0 auto}
-nav.toc{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:28px 18px 40px 24px;border-right:1px solid var(--line);font-size:14px}
+nav.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;height:100vh;overflow:auto;padding:28px 18px 40px 24px;border-right:1px solid var(--line);font-size:14px}
 nav.toc .brand{font-weight:700;font-size:15px;margin:0 0 4px}
 nav.toc .sub{color:var(--muted);font-size:12.5px;margin:0 0 18px}
 nav.toc ol{list-style:none;margin:0;padding:0}
@@ -40,7 +42,8 @@ nav.toc li.h3 a{padding-left:22px;color:var(--muted);font-size:13px}
 nav.toc li a.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
 .tools{display:flex;gap:8px;margin:0 0 16px}
 .tools button{font:inherit;font-size:12.5px;padding:5px 10px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--text);cursor:pointer}
-main{padding:40px 48px 80px;max-width:900px;min-width:0}
+main{padding-block:40px 80px;padding-left:max(48px,env(safe-area-inset-left,0px));
+padding-right:max(48px,env(safe-area-inset-right,0px));max-width:900px;min-width:0}
 header.top h1{font-size:34px;line-height:1.2;margin:0 0 6px;letter-spacing:-.01em}
 header.top .meta{color:var(--muted);font-size:14px;margin:0 0 28px}
 h2{font-size:25px;line-height:1.3;margin:56px 0 14px;padding-top:12px;border-top:1px solid var(--line)}
@@ -77,7 +80,7 @@ details.mobile-toc{display:none}
  details.mobile-toc summary{cursor:pointer;font-weight:600}
  details.mobile-toc ol{list-style:none;padding:8px 0 0;margin:0}
  details.mobile-toc li.h3{padding-left:14px;font-size:14px}
- main{padding:24px 16px 60px}
+ main{padding-block:24px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
  header.top h1{font-size:27px}
  h2{font-size:22px}
 }
@@ -114,7 +117,7 @@ function setTheme(t){if(t)root.setAttribute('data-theme',t);else root.removeAttr
 try{const t=localStorage.getItem('guide-theme');if(t)root.setAttribute('data-theme',t)}catch(e){}
 document.getElementById('theme').addEventListener('click',()=>{const dark=root.getAttribute('data-theme')==='dark'||
   (!root.getAttribute('data-theme')&&matchMedia('(prefers-color-scheme: dark)').matches);setTheme(dark?'light':'dark');});
-document.getElementById('print').addEventListener('click',()=>window.print());
+const pr=document.getElementById('print');if(pr)pr.addEventListener('click',()=>window.print());
 """
 
 
@@ -131,7 +134,7 @@ def slugger():
     return slug
 
 
-def build():
+def build(out=OUT, artifact=False):
     src = SRC.read_text(encoding="utf-8")
     src = re.sub(r"\n## Contents\n.*?\n---\n", "\n", src, count=1, flags=re.S)  # the sidebar replaces it
 
@@ -158,21 +161,12 @@ def build():
 
     items = "\n".join(f'<li class="{tag}"><a href="#{sid}">{html.escape(text)}</a></li>' for tag, sid, text in toc)
     built = dt.date.today().strftime("%B %d, %Y").replace(" 0", " ")
-    page = f"""<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GEO Engine Guide</title>
-<meta name="description" content="Build and run guide for the one-person AI-visibility and SEO service engine.">
-<style>{CSS}</style>
-</head>
-<body>
-<div class="layout">
+    print_btn = "" if artifact else '<button id="print" type="button">Print / PDF</button>'
+    content = f"""<div class="layout">
 <nav class="toc" aria-label="Contents">
   <p class="brand">GEO Engine Guide</p>
   <p class="sub">Build and run instructions</p>
-  <div class="tools"><button id="theme" type="button">Light / dark</button><button id="print" type="button">Print / PDF</button></div>
+  <div class="tools"><button id="theme" type="button">Light / dark</button>{print_btn}</div>
   <ol>{items}</ol>
 </nav>
 <main>
@@ -184,12 +178,23 @@ def build():
 </main>
 </div>
 <script>{JS}</script>
-</body>
-</html>
 """
-    OUT.write_text(page, encoding="utf-8")
+    head = """<title>GEO Engine Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Build and run guide for the one-person AI-visibility and SEO service engine.">"""
+    if artifact:  # the artifact host adds doctype/html/head/body itself
+        page = f"{head}\n<style>{CSS}</style>\n{content}"
+    else:
+        page = (f'<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
+                f'<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
+                f"{head}\n<style>{CSS}</style>\n</head>\n<body>\n{content}</body>\n</html>\n")
+    pathlib.Path(out).write_text(page, encoding="utf-8")
     return len(toc)
 
 
 if __name__ == "__main__":
-    print(f"Wrote {OUT} ({build()} sections)")
+    import sys
+    if len(sys.argv) == 3 and sys.argv[1] == "--artifact":
+        print(f"Wrote {sys.argv[2]} ({build(sys.argv[2], artifact=True)} sections)")
+    else:
+        print(f"Wrote {OUT} ({build()} sections)")
